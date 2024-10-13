@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coherent-solutions-.NET-School", "Coherent-solutions-.NET-School.csproj", "{B034D2AB-EC0B-4DBA-86F6-DE094DA6B515}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coherent-solutions-.NET-School", "Coherent-solutions-.NET-School.csproj", "{B034D2AB-EC0B-4DBA-86F6-DE094DA6B515}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task 1.2", "..\Task 1.2\Task 1.2.csproj", "{AEAD96F4-6A14-41E1-A0AF-4A58F67981D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{B034D2AB-EC0B-4DBA-86F6-DE094DA6B515}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B034D2AB-EC0B-4DBA-86F6-DE094DA6B515}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B034D2AB-EC0B-4DBA-86F6-DE094DA6B515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEAD96F4-6A14-41E1-A0AF-4A58F67981D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEAD96F4-6A14-41E1-A0AF-4A58F67981D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEAD96F4-6A14-41E1-A0AF-4A58F67981D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEAD96F4-6A14-41E1-A0AF-4A58F67981D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
