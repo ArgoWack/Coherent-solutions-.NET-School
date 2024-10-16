@@ -11,6 +11,7 @@ Note 2. You can convert any a value to string using a.ToString().
 
 class Program
 {
+    //example input 030640615, output 2
     public static void Main()
     {
         // expected 9 digits of the ISBN
@@ -31,15 +32,14 @@ class Program
         // loops through the first 9 digits, multiplying each digit by its position (1-9)
         for (int i = 0; i < 9; i++)
         {
-            int digit = isbnFirstNineDigits[i] - '0'; // converts char to int
-            int weight = i + 1;
+            int digit = isbnFirstNineDigits[i] - '0'; // convert char to int
+            int weight = 10 - i; // position weights start from 10 and go down to 2
             sum += digit * weight;
         }
+        //  11 minus remainder of the sum after divide by 11 to get reverse reminder
+        int reverseRemainder = 11 - sum % 11;
 
-        //  remainder of the sum after divide by 11
-        int remainder = sum % 11;
-
-        // if remainder is 10, returns 'X'. Otherwise, returns the remainder as a digit
-        return remainder == 10 ? 'X' : remainder.ToString()[0];
+        // if remainder is 10, returns 'X'. Otherwise, returns the reverse of remainder as a digit
+        return sum % 11 == 10 ? 'X' : reverseRemainder.ToString()[0];
     }
 }
