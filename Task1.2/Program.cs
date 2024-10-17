@@ -40,6 +40,6 @@ class Program
         int reverseRemainder = 11 - sum % 11;
 
         // if remainder is 10, returns 'X'. Otherwise, returns the reverse of remainder as a digit
-        return sum % 11 == 10 ? 'X' : reverseRemainder.ToString()[0];
+        return reverseRemainder == 10 ? 'X' : reverseRemainder.ToString()[0];
     }
 }
