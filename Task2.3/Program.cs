@@ -2,11 +2,11 @@
 /*
 Task 2.3. 
 Suppose that Coherent solutions develops a training management system. Each training consists of a set of lectures and practical exercises.
-
 It is necessary to create classes to represent the following entities: training, lecture, practical lesson.
 All specified entities have a text description (this is an arbitrary string, possibly empty or equal to null)
 The lecture has a topic (an arbitrary string, possibly empty or equal to null), and a practical lesson has a link to the task condition (an arbitrary string, possibly empty or equal to null) and a link to the solution (an arbitrary string, possibly empty or equal to null).
-The training must store a set of lectures and practical exercises in an internal array and have an Add() method for adding a lecture or practical exercise. In addition, the training must have a method IsPractical() - returns true if the training contains only practical exercises.
+The training must store a set of lectures and practical exercises in an internal array and have an Add() method for adding a lecture or practical exercise. 
+In addition, the training must have a method IsPractical() - returns true if the training contains only practical exercises.
 Implement an instance method Clone() in the training class to clone the training. Note: Deep cloning must be performed, not shallow cloning.
  */
 class Program
@@ -62,16 +62,25 @@ class Program
     }
 
     // Class for Training
-    public class Training
+    public class Training : TrainingComponent
     {
-        private List<TrainingComponent> components = new List<TrainingComponent>();
+        //private TrainingComponent[] components; I wanted to use this first but I wasn't sure if array was meant just as a table, or literally "internal Array" was required, so I went with the latter.
+        internal Array components;
+        private int componentCount;
+
+        // Constructor for Training to set description and initialize array
+        public Training(string description, int maxComponents) : base(description)
+        {
+            components = new TrainingComponent[maxComponents];
+            componentCount = 0;
+        }
 
         // Method to add Lecture or PracticalLesson
         public void Add(TrainingComponent component)
         {
-            if (component != null)
+            if (component != null && componentCount < components.Length)
             {
-                components.Add(component);
+                components.SetValue(component, componentCount++);
             }
         }
 
@@ -89,12 +98,15 @@ class Program
         }
 
         // Deep clone method for Training
-        public Training Clone()
+        public override Training Clone()
         {
-            Training clonedTraining = new Training();
-            foreach (var component in components)
+            Training clonedTraining = new Training(Description, components.Length);
+            foreach (TrainingComponent component in components)
             {
-                clonedTraining.Add(component.Clone());
+                if (component != null)
+                {
+                    clonedTraining.Add(component.Clone());
+                }
             }
             return clonedTraining;
         }
@@ -102,6 +114,7 @@ class Program
         // Method to get details for testing purposes
         public void DisplayDetails()
         {
+            WriteLine($"Training Description: '{Description}'");
             foreach (var component in components)
             {
                 if (component is Lecture lecture)
@@ -125,7 +138,7 @@ class Program
         PracticalLesson practical2 = new PracticalLesson("text6", "http://tasklink2", "http://solutionlink2");
 
         // Create Training and add components
-        Training training = new Training();
+        Training training = new Training("Training Course Description", 5); // 5 is max length
         training.Add(lecture1);
         training.Add(lecture2);
         training.Add(practical1);
@@ -161,7 +174,7 @@ class Program
         PracticalLesson nullPractical = new PracticalLesson(null, null, null);
 
         // Add them to the training
-        Training testTraining = new Training();
+        Training testTraining = new Training("Test Training", 10); // larger array for tests
         testTraining.Add(emptyLecture);
         testTraining.Add(nullLecture);
         testTraining.Add(emptyPractical);
