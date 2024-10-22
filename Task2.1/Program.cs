@@ -58,7 +58,7 @@ class Program
             return X == 0 && Y == 0 && Z == 0;
         }
 
-        // method to calculate the distance to another point
+        // method to calculate the distance to another point including null (no distance)
         public double DistanceTo(Point otherPoint)
         {
             int deltaX = X - otherPoint.X;
