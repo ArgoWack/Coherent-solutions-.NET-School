@@ -1,93 +1,55 @@
-﻿using static System.Console;
+using static System.Console;
 /*
-Task 1.1
-For numbers in duodecimal numerical system, the symbols 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A (ten) and B (eleven) are used. When starting, the application asks the user to input two integers a and b (assume that the user enters integers without errors). Then the application displays all integers in the range from a (inclusive) to b (inclusive), which in their duodecimal representation have exactly two symbols A. Develop a console application that implements the specified functionality.
-Note 1. In order to transform string s to int use method int.Parse(s).
-Note 2. Output required numbers in decimal (not duodecimal) numerical system. 
-*/
+Task  1.2
+Let 10-character ISBN is an unique digital code to identify a book, with form: . Digit  is a control one, it is calculated according the condition, that expression 
 
-// examples A11A, AAB, 22AA.
+(the sum of the products of digits by the weight of their positions) has to be a multiple of 11.
+Create an application that prompts the user for a string of 9 digit characters (these are the first nine digits of the ISBN), calculates the check digit, and outputs the resulting ISBN. Do not check the correctness of the user's input - assume that the user does not make errors when entering.
+Note 1. Сheck «digit» can be equal to 10. In this case use symbol X to denote it.
+Note 2. You can convert any a value to string using a.ToString().
+*/
 
 class Program
 {
+    //example input 030640615, output 2
     public static void Main()
     {
-        WriteLine("Please input first duodecimal number");
-        string firstDuodecimalNumber = ReadLine();
+        // expected 9 digits of the ISBN
+        WriteLine("Please enter the first 9 digits of the ISBN:");
+        string isbnFirstNineDigits = ReadLine();
 
-        WriteLine("Please input second duodecimal number");
-        string secondDuodecimalNumber = ReadLine();
+        char checkDigit = CalculateCheckDigit(isbnFirstNineDigits);
 
-        int firstNumber = ConvertToDecimal(firstDuodecimalNumber);
-        int secondNumber = ConvertToDecimal(secondDuodecimalNumber);
-
-        int start = Math.Min(firstNumber, secondNumber);
-        int end = Math.Max(firstNumber, secondNumber);
-
-        for (int i = start; i <= end; i++)
-        {
-            string duodecimalRepresentation = ConvertToDuodecimal(i);
-
-            int aCount = CountA(duodecimalRepresentation);
-
-            if (aCount == 2)
-            {
-                WriteLine(i);
-            }
-        }
+        // outputs full ISBN
+        string fullIsbn = isbnFirstNineDigits + checkDigit;
+        WriteLine("The full 10-character ISBN is: " + fullIsbn);
     }
 
-    public static int ConvertToDecimal(string duodecimal)
+    public static char CalculateCheckDigit(string isbnFirstNineDigits)
     {
-        int result = 0;
-        int baseValue = 12;
+        int sum = 0;
 
-        foreach (char c in duodecimal)
+        // loops through the first 9 digits, multiplying each digit by its position (1-9)
+        for (int i = 0; i < 9; i++)
         {
-            result *= baseValue; // Shifts previous digits to the left
-            if (c >= '0' && c <= '9') // Handles digits 0-9
-            {
-                result += c - '0';
-            }
-            else if (c == 'A') // A = 10
-            {
-                result += 10;
-            }
-            else if (c == 'B') // B = 11
-            {
-                result += 11;
-            }
+            int digit = isbnFirstNineDigits[i] - '0'; // convert char to int
+            int weight = 10 - i; // position weights start from 10 and go down to 2
+            sum += digit * weight;
         }
+        //  11 minus remainder of the sum after divide by 11 to get reverse reminder
+        int reverseRemainder =11- sum % 11;
 
-        return result;
-    }
-    public static string ConvertToDuodecimal(int number)
-    {
-        if (number == 0)
+        switch (reverseRemainder)
         {
-            return "0";
+            case 11:
+                //if remainder is 11, returns '0'.
+                return '0';
+            case 10:
+                //if remainder is 10, returns 'X'.
+                return 'X';
+            default:
+                //when remainder is between 0-9, return 0-9 accordingly
+                return reverseRemainder.ToString()[0];
         }
-
-        string result = "";
-        while (number > 0)
-        {
-            int remainder = number % 12;
-            result = (remainder == 10 ? "A" : remainder == 11 ? "B" : remainder.ToString()) + result;
-            number /= 12;
-        }
-        return result;
-    }
-
-    public static int CountA(string duodecimal)
-    {
-        int count = 0;
-        foreach (char c in duodecimal)
-        {
-            if (c == 'A')
-            {
-                count++;
-            }
-        }
-        return count;
     }
 }

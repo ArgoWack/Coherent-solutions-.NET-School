@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coherent-solutions-.NET-Sch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task1.2", "Task1.2\Task1.2.csproj", "{A9CCF30C-0565-4A4D-BE26-E02A4B97C864}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task1.2", "Task1.2\Task1.2.csproj", "{A9CCF30C-0565-4A4D-BE26-E02A4B97C864}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
