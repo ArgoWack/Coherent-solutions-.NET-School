@@ -1,3 +1,4 @@
+﻿using System.Linq.Expressions;
 using static System.Console;
 /*
 Task  1.2
@@ -37,7 +38,7 @@ class Program
             sum += digit * weight;
         }
         //  11 minus remainder of the sum after divide by 11 to get reverse reminder
-        int reverseRemainder =11- sum % 11;
+        int reverseRemainder = 11 - sum % 11;
 
         switch (reverseRemainder)
         {
