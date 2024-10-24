@@ -16,114 +16,6 @@ Create a diagonal matrix extension method that performs the addition of two diag
 
 class Program
 {
-    public class DiagonalMatrix
-    {
-        private readonly int[] diagonalElements;
-
-        // readonly property to get the size of the matrix
-        public int Size { get; }
-
-        // constructor
-        public DiagonalMatrix(params int[] elements)
-        {
-            if (elements == null)
-            {
-                Size = 0;
-                diagonalElements = new int[0];
-            }
-            else
-            {
-                Size = elements.Length;
-                diagonalElements = new int[Size];
-                for (int i = 0; i < Size; i++)
-                {
-                    diagonalElements[i] = elements[i];
-                }
-            }
-        }
-
-        // indexer
-        public int this[int i, int j]
-        {
-            get
-            {
-                if (i < 0 || i >= Size || j < 0 || j >= Size || j != i)
-                {
-                    return 0; //I don't know which option is preferd given different versions in task description and additional note below
-                    // throw new ArgumentOutOfRangeException("Indices are out of bounds.");
-                }
-                return diagonalElements[i];
-            }
-            set
-            {
-                if (i < 0 || i >= Size || j < 0 || j >= Size || i != j)
-                {
-                    throw new ArgumentOutOfRangeException("Indices are out of bounds.");
-                }
-                diagonalElements[i] = value;
-            }
-        }
-
-        // method to sum elements on diagonal (Track)
-        public int Track()
-        {
-            int sum = 0;
-            for (int i = 0; i < Size; i++)
-            {
-                sum += diagonalElements[i];
-            }
-            return sum;
-        }
-        public override bool Equals(object obj)
-        {
-            if (obj is DiagonalMatrix otherMatrix)
-            {
-                if (Size != otherMatrix.Size)
-                {
-                    return false;
-                }
-
-                for (int i = 0; i < Size; i++)
-                {
-                    if (diagonalElements[i] != otherMatrix.diagonalElements[i])
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-        public override string ToString()
-        {
-            if (Size == 0) return "[]";
-
-            string result = "[ ";
-            for (int i = 0; i < Size; i++)
-            {
-                result += diagonalElements[i] + " ";
-            }
-            result += "]";
-            return result;
-        }
-
-        // Adds matrices treating missing elements as 0's
-        public DiagonalMatrix Add(DiagonalMatrix other)
-        {
-            int maxSize = Math.Max(this.Size, other.Size);
-            int[] resultElements = new int[maxSize];
-
-            for (int i = 0; i < maxSize; i++)
-            {
-                int value1 = i < this.Size ? this[i, i] : 0;
-                int value2 = i < other.Size ? other[i, i] : 0;
-                resultElements[i] = value1 + value2;
-            }
-
-            return new DiagonalMatrix(resultElements);
-        }
-    }
-
     public static void Main()
     {
         // creating and testing DiagonalMatrix
@@ -145,8 +37,8 @@ class Program
         // testing Equals method
         WriteLine($"Matrix1 equals Matrix2? {matrix1.Equals(matrix2)}");
 
-        // testing ToString method
-        WriteLine($"Matrix1 as string: {matrix1}");
+        // testing ToFString method
+        WriteLine($"Matrix1 as string: {matrix1.ToFormattedString()}");
 
         // adding matrices using the Add method integrated into DiagonalMatrix
         DiagonalMatrix sumMatrix = matrix1.Add(matrix2);
