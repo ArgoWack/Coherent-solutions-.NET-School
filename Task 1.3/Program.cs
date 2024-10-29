@@ -5,70 +5,72 @@ When starting, the application asks the user for the number of elements in the i
 Note 1. The correctness of the array length may not be controlled.
 Note 2. Do not use the standard collections and LINQ!
 */
-
-class Program
+namespace Task13
 {
-    public static void Main()
+    class Program
     {
-        WriteLine("Please enter the number of elements in the array:");
-        int numberOfElements = int.Parse(ReadLine());
-
-        int[] originalArray = new int[numberOfElements];
-
-        for (int i = 0; i < numberOfElements; i++)
+        public static void RunTask13()
         {
-            Write($"Enter element {i + 1}: ");
-            originalArray[i] = int.Parse(ReadLine());
-        }
+            WriteLine("Please enter the number of elements in the array:");
+            int numberOfElements = int.Parse(ReadLine());
 
-        WriteLine("Original array:");
-        PrintArray(originalArray);
+            int[] originalArray = new int[numberOfElements];
 
-        int[] uniqueArray = CreateUniqueArray(originalArray);
-
-        WriteLine("Array with unique elements:");
-        PrintArray(uniqueArray);
-    }
-
-    public static void PrintArray(int[] array)
-    {
-        for (int i = 0; i < array.Length; i++)
-        {
-            Write(array[i] + " ");
-        }
-        WriteLine();
-    }
-    public static int[] CreateUniqueArray(int[] originalArray)
-    {
-        int[] uniqueArray = new int[originalArray.Length];
-        int uniqueCount = 0;
-
-        for (int i = 0; i < originalArray.Length; i++)
-        {
-            bool isDuplicate = false;
-
-            for (int j = 0; j < uniqueCount; j++)
+            for (int i = 0; i < numberOfElements; i++)
             {
-                if (originalArray[i] == uniqueArray[j])
+                Write($"Enter element {i + 1}: ");
+                originalArray[i] = int.Parse(ReadLine());
+            }
+
+            WriteLine("Original array:");
+            PrintArray(originalArray);
+
+            int[] uniqueArray = CreateUniqueArray(originalArray);
+
+            WriteLine("Array with unique elements:");
+            PrintArray(uniqueArray);
+        }
+
+        public static void PrintArray(int[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                Write(array[i] + " ");
+            }
+            WriteLine();
+        }
+        public static int[] CreateUniqueArray(int[] originalArray)
+        {
+            int[] uniqueArray = new int[originalArray.Length];
+            int uniqueCount = 0;
+
+            for (int i = 0; i < originalArray.Length; i++)
+            {
+                bool isDuplicate = false;
+
+                for (int j = 0; j < uniqueCount; j++)
                 {
-                    isDuplicate = true;
-                    break;
+                    if (originalArray[i] == uniqueArray[j])
+                    {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+
+                if (!isDuplicate)
+                {
+                    uniqueArray[uniqueCount] = originalArray[i];
+                    uniqueCount++;
                 }
             }
 
-            if (!isDuplicate)
+            int[] resultArray = new int[uniqueCount];
+            for (int i = 0; i < uniqueCount; i++)
             {
-                uniqueArray[uniqueCount] = originalArray[i];
-                uniqueCount++;
+                resultArray[i] = uniqueArray[i];
             }
-        }
 
-        int[] resultArray = new int[uniqueCount];
-        for (int i = 0; i < uniqueCount; i++)
-        {
-            resultArray[i] = uniqueArray[i];
+            return resultArray;
         }
-
-        return resultArray;
     }
 }
