@@ -8,74 +8,76 @@ Note 2. Output required numbers in decimal (not duodecimal) numerical system.
 */
 
 // examples A11A, AAB, 22AA.
-
-class Program
+namespace Task11
 {
-    public static void RunTask11()
+    class Program
     {
-        WriteLine("Please input first decimal number");
-        string firstDecimalNumber = ReadLine();
-
-        WriteLine("Please input second decimal number");
-        string secondDecimalNumber = ReadLine();
-
-
-        int firstNumber = int.Parse(firstDecimalNumber);
-        int secondNumber = int.Parse(secondDecimalNumber);
-
-
-        int start = Math.Min(firstNumber, secondNumber);
-        int end = Math.Max(firstNumber, secondNumber);
-
-        for (int i = start; i <= end; i++)
+        public static void RunTask11()
         {
-            string duodecimalRepresentation = ConvertToDuodecimal(i);
+            WriteLine("Please input first decimal number");
+            string firstDecimalNumber = ReadLine();
 
-            int aCount = CountA(duodecimalRepresentation);
+            WriteLine("Please input second decimal number");
+            string secondDecimalNumber = ReadLine();
 
-            if (aCount == 2)
+
+            int firstNumber = int.Parse(firstDecimalNumber);
+            int secondNumber = int.Parse(secondDecimalNumber);
+
+
+            int start = Math.Min(firstNumber, secondNumber);
+            int end = Math.Max(firstNumber, secondNumber);
+
+            for (int i = start; i <= end; i++)
             {
-                WriteLine(i);
+                string duodecimalRepresentation = ConvertToDuodecimal(i);
+
+                int aCount = CountA(duodecimalRepresentation);
+
+                if (aCount == 2)
+                {
+                    WriteLine(i);
+                }
             }
         }
-    }
 
-    public static string ConvertToDuodecimal(int number)
-    {
-        if (number == 0)
+        public static string ConvertToDuodecimal(int number)
         {
-            return "0";
-        }
-
-        string result = "";
-        bool isNegative = number < 0; // Checks for negative number
-        number = Math.Abs(number); // Takes  absolute value for conversion
-
-        while (number > 0)
-        {
-            int remainder = number % 12;
-            result = (remainder == 10 ? "A" : remainder == 11 ? "B" : remainder.ToString()) + result;
-            number /= 12;
-        }
-
-        if (isNegative)
-        {
-            result = "-" + result; // adds negative sign if the number was negative
-        }
-
-        return result;
-    }
-
-    public static int CountA(string duodecimal)
-    {
-        int count = 0;
-        foreach (char c in duodecimal)
-        {
-            if (c == 'A')
+            if (number == 0)
             {
-                count++;
+                return "0";
             }
+
+            string result = "";
+            bool isNegative = number < 0; // Checks for negative number
+            number = Math.Abs(number); // Takes  absolute value for conversion
+
+            while (number > 0)
+            {
+                int remainder = number % 12;
+                result = (remainder == 10 ? "A" : remainder == 11 ? "B" : remainder.ToString()) + result;
+                number /= 12;
+            }
+
+            if (isNegative)
+            {
+                result = "-" + result; // adds negative sign if the number was negative
+            }
+
+            return result;
         }
-        return count;
+
+        public static int CountA(string duodecimal)
+        {
+            int count = 0;
+            foreach (char c in duodecimal)
+            {
+                if (c == 'A')
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
     }
 }
