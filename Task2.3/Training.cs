@@ -2,8 +2,7 @@
 using static System.Console;
 public class Training : TrainingComponent
 {
-    //private TrainingComponent[] components; I wanted to use this first but I wasn't sure if array was meant just as a table, or literally "internal Array" was required, so I went with the latter.
-    internal Array components;
+    private TrainingComponent[] components;
     private int componentCount;
 
     // Constructor for Training to set description and initialize array
