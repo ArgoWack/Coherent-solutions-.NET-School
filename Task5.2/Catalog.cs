@@ -1,38 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace Task52
 {
     public class Catalog
     {
-        private readonly Dictionary<string, Book> books = new Dictionary<string, Book>();
-        private static readonly Regex isbnFormat = new Regex(@"^\d{3}-\d-\d{2}-\d{6}-\d$|^\d{13}$");
+        private readonly Dictionary<ISBN, Book> books = new Dictionary<ISBN, Book>();
 
         // Adds a book to the catalog
-        public void AddBook(string isbn, Book book)
+        public void AddBook(ISBN isbn, Book book)
         {
-            if (string.IsNullOrWhiteSpace(isbn) || !isbnFormat.IsMatch(isbn))
-                throw new ArgumentException("Invalid ISBN format.");
-
-            string normalizedIsbn = NormalizeIsbn(isbn);
-            books[normalizedIsbn] = book;
+            books[isbn] = book;
         }
 
         // Retrieves a book by ISBN
-        public Book GetBook(string isbn)
+        public Book GetBook(ISBN isbn)
         {
-            string normalizedIsbn = NormalizeIsbn(isbn);
-            return books.TryGetValue(normalizedIsbn, out Book book) ? book : null;
-        }
-
-        // Helper method to normalize ISBN by removing hyphens
-        private static string NormalizeIsbn(string isbn)
-        {
-            return isbn.Replace("-", "");
+            return books.TryGetValue(isbn, out Book book) ? book : null;
         }
 
         // a) Get a set of book titles, sorted alphabetically
@@ -44,8 +27,9 @@ namespace Task52
         // b) Retrieve a set of books by the specified author name, sorted by publication date
         public IEnumerable<Book> GetBooksByAuthor(string authorName)
         {
+            string upperAuthorName = authorName.ToUpper();
             return books.Values
-                .Where(book => book.Authors.Contains(authorName))
+                .Where(book => book.Authors.Contains(upperAuthorName))
                 .OrderBy(book => book.PublicationDate);
         }
 

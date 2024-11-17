@@ -23,15 +23,15 @@ namespace Task52
             Catalog catalog = new Catalog();
 
             // Adding books to the catalog
-            catalog.AddBook("123-4-56-789012-3", new Book("Book One", new DateTime(2020, 5, 1), new[] { "Author A", "Author B" }));
-            catalog.AddBook("9876543210123", new Book("Book Two", new DateTime(2018, 11, 15), new[] { "Author C" }));
-            catalog.AddBook("123-4-56-123456-7", new Book("Book Three", null, new[] { "Author A" }));
-            catalog.AddBook("123-4-56-789012-5", new Book("Book Four", new DateTime(2020, 7, 1), new[] { "Author A", "Author B" }));
+            catalog.AddBook(new ISBN("123-4-56-789012-3"), new Book("Book One", new DateTime(2020, 5, 1), new[] { "Author A", "Author B" }));
+            catalog.AddBook(new ISBN("9876543210123"), new Book("Book Two", new DateTime(2018, 11, 15), new[] { "Author C" }));
+            catalog.AddBook(new ISBN("123-4-56-123456-7"), new Book("Book Three", null, new[] { "Author A" }));
+            catalog.AddBook(new ISBN("123-4-56-789012-5"), new Book("Book Four", new DateTime(2020, 7, 1), new[] { "Author A", "Author B" }));
 
             // Retrieve book by ISBN
             WriteLine("Retrieving books by ISBN:");
-            WriteLine("For 123-4-56-789012-3: " + catalog.GetBook("123-4-56-789012-3"));
-            WriteLine("For 1234567890123: " + catalog.GetBook("1234567890123"));
+            WriteLine("For 123-4-56-789012-3: " + catalog.GetBook(new ISBN("123-4-56-789012-3")));
+            WriteLine("For 1234567890123: " + catalog.GetBook(new ISBN("1234567890123")));
 
             // a) Get sorted book titles
             WriteLine("\nSorted book titles:");

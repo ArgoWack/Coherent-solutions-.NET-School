@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Task52
 {
     public class Book
@@ -19,7 +14,7 @@ namespace Task52
 
             Title = title;
             PublicationDate = publicationDate;
-            Authors = new HashSet<string>(authors ?? Enumerable.Empty<string>());
+            Authors = new HashSet<string>(authors?.Select(a => a.ToUpper()) ?? Enumerable.Empty<string>());
         }
 
         public override string ToString()
