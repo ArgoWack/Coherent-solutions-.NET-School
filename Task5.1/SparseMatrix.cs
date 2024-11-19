@@ -27,21 +27,23 @@ namespace Task51
             nonZeroElements = new Dictionary<(int, int), long>();
         }
 
+        private void ValidateIndex(int i, int j)
+        {
+            if (i < 0 || i >= Rows || j < 0 || j >= Columns)
+                throw new IndexOutOfRangeException("Index out of bounds.");
+        }
+
         // Indexer
         public long this[int i, int j]
         {
             get
             {
-                if (i < 0 || i >= Rows || j < 0 || j >= Columns)
-                    throw new IndexOutOfRangeException("Index out of bounds.");
-
+                ValidateIndex(i, j);
                 return nonZeroElements.TryGetValue((i, j), out long value) ? value : 0;
             }
             set
             {
-                if (i < 0 || i >= Rows || j < 0 || j >= Columns)
-                    throw new IndexOutOfRangeException("Index out of bounds.");
-
+                ValidateIndex(i, j);
                 if (value != 0)
                 {
                     nonZeroElements[(i, j)] = value;
@@ -56,7 +58,7 @@ namespace Task51
         // ToString method override for debugging
         public override string ToString()
         {
-            var result = new System.Text.StringBuilder();
+            var result = new StringBuilder();
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
@@ -95,20 +97,8 @@ namespace Task51
         }
 
         // GetCount method
-        public int GetCount(long x)
-        {
-            if (x == 0)
-            {
-                // Count zero elements
-                int totalElements = Rows * Columns;
-                int nonZeroCount = nonZeroElements.Count;
-                return totalElements - nonZeroCount;
-            }
-            else
-            {
-                // Count non-zero elements equal to x
-                return nonZeroElements.Values.Count(value => value == x);
-            }
-        }
+        public int GetCount(long x) =>
+            x == 0 ? Rows * Columns - nonZeroElements.Count
+                   : nonZeroElements.Values.Count(value => value == x);
     }
 }
