@@ -20,7 +20,7 @@ namespace Task41
 {
     class Program
     {
-        static void Task41(string[] args)
+        static void Task41 (string[] args)
         {
             // Step 1: Create two DiagonalMatrix<int> objects
             WriteLine("Step 1: Creating two 3x3 diagonal matrices.");

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Task41
 {
     public class DiagonalMatrix<T>
     {
         private readonly T[] diagonalElements;
-        private Stack<(int Index, T OldValue)> changeHistory = new Stack<(int, T)>();
+
         public int Size { get; }
 
-        // constructor
+        // Constructor
         public DiagonalMatrix(int size)
         {
             if (size < 0)
@@ -21,16 +16,13 @@ namespace Task41
             Size = size;
             diagonalElements = new T[size];
         }
-        private bool IsProperIndex(int i, int j)
-        {
-            if (i < 0 || i >= Size || j < 0 || j >= Size)
-            {
-                return false;
-            }
-            return true;
-        }
 
-        // indexer
+        // ElementChanged event
+        public event EventHandler<ElementChangedEventArgs<T>> ElementChanged;
+
+        private bool IsProperIndex(int i, int j) => !(i < 0 || i >= Size || j < 0 || j >= Size);
+
+        // Indexer
         public T this[int i, int j]
         {
             get
@@ -54,23 +46,11 @@ namespace Task41
                     if (!EqualityComparer<T>.Default.Equals(oldValue, value))
                     {
                         diagonalElements[i] = value;
+
+                        // Trigger the ElementChanged event
                         ElementChanged?.Invoke(this, new ElementChangedEventArgs<T>(i, j, oldValue, value));
-                        changeHistory.Push((i, oldValue));
                     }
                 }
-            }
-        }
-
-        // ElementChanged event
-        public event EventHandler<ElementChangedEventArgs<T>> ElementChanged;
-
-        // Undo Method
-        public void Undo()
-        {
-            if (changeHistory.Count > 0)
-            {
-                var lastChange = changeHistory.Pop();
-                diagonalElements[lastChange.Index] = lastChange.OldValue;
             }
         }
     }
