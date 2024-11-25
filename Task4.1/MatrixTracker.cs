@@ -25,8 +25,14 @@ namespace Task41
         {
             if (changeHistory.Count > 0)
             {
+                // Unsubscribe from the event to prevent a loop
+                matrix.ElementChanged -= OnElementChanged;
+
                 var lastChange = changeHistory.Pop();
-                matrix[lastChange.Row, lastChange.Column] = lastChange.OldValue; // Revert the change
+                matrix[lastChange.Row, lastChange.Column] = lastChange.OldValue;
+
+                // Resubscribe to the event
+                matrix.ElementChanged += OnElementChanged;
             }
             else
             {
