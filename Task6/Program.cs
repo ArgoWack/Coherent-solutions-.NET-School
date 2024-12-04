@@ -40,45 +40,37 @@ namespace Task6
 {
     class Program
     {
-        // In case of multiple books with the same ISBN the last one is being kept
-        static void Task6()
+        static void Task6(string[] args)
         {
             // Create catalog and populate it with books
             Catalog catalog = new Catalog();
-            catalog.AddBook(new ISBN("978-0-61-800221-4"), new Book("The Hobbit: or There and Back Again", new DateTime(1999, 5, 1), new[] { "J.R.R.Tolkien"}));
-            catalog.AddBook(new ISBN("9780345339713"), new Book("The Two Towers The Lord of the Rings", new DateTime(1986, 11, 15), new[] { "J.R.R.Tolkien" }));
-            catalog.AddBook(new ISBN("9780596519247"), new Book("Linq Pocket Reference: Learn and Implement Linq for .Net Applications", null, new[] { "Albahari, Joseph", "Albahari, Ben" }));
-            catalog.AddBook(new ISBN("9781491988534"), new Book("C# 7.0 Pocket Reference: Instant Help for C# 7.0 Programmers", new DateTime(2017, 7, 1), new[] { "Albahari, Joseph" }));
-            catalog.AddBook(new ISBN("9781492051138"), new Book("C# 8.0 in a Nutshell: The Definitive Reference", new DateTime(2020, 1, 1), new[] { "Albahari, Joseph" }));
-            catalog.AddBook(new ISBN("978-0-61-800221-4"), new Book("The Hobbit: or There and Back Again", new DateTime(2020, 5, 1), new[] { "J.R.R.Tolkien" }));
-            catalog.AddBook(new ISBN("978-0-39-571041-8"), new Book("The War of the Jewels: The Later Silmarilion - Part Two - Volume XI: The History of Middle-Earth", new DateTime(1994, 3, 1), new[] { "J.R.R.Tolkien", "Christopher Tolkien (Editor)" }));
+            catalog.AddBook(new ISBN("978-0-61-800221-4"), new Book("The Hobbit: or There and Back Again", new DateTime(2020, 5, 1), new[]{new Author("J.R.R.", "Tolkien", new DateTime(1892, 1, 3))}, new ISBN("978-0-61-800221-4")));
+            catalog.AddBook(new ISBN("9780345339713"), new Book("The Two Towers The Lord of the Rings", new DateTime(1986, 11, 15), new[]{new Author("J.R.R.", "Tolkien", new DateTime(1892, 1, 3))}, new ISBN("9780345339713")));
+            catalog.AddBook(new ISBN("9780596519247"), new Book("Linq Pocket Reference: Learn and Implement Linq for .Net Applications", null, new[]{new Author("Joseph", "Albahari", new DateTime(1970, 1, 1)),new Author("Ben", "Albahari", new DateTime(1975, 1, 1))}, new ISBN("9780596519247")));
+            catalog.AddBook(new ISBN("9781491988534"), new Book("C# 7.0 Pocket Reference: Instant Help for C# 7.0 Programmers", new DateTime(2017, 7, 1), new[]{new Author("Joseph", "Albahari", new DateTime(1970, 1, 1))}, new ISBN("9781491988534")));
+            catalog.AddBook(new ISBN("9781492051138"), new Book("C# 8.0 in a Nutshell: The Definitive Reference", new DateTime(2020, 1, 1), new[]{new Author("Joseph", "Albahari", new DateTime(1970, 1, 1))}, new ISBN("9781492051138")));
+            catalog.AddBook(new ISBN("9780395710418"), new Book("The War of the Jewels: The Later Silmarilion - Part Two - Volume XI: The History of Middle-Earth", new DateTime(1994, 3, 1), new[]{new Author("J.R.R.", "Tolkien", new DateTime(1892, 1, 3)),new Author("Christopher", "Tolkien", new DateTime(1924, 11, 21))}, new ISBN("9780395710418")));
 
-            // Save and Load using XML
-            IRepository xmlRepo = new XMLRepository();
-            string xmlPath = "catalog.xml";
+            // Save and load from XML
+            IRepository xmlRepo = new XMLRepository("catalog.xml");
+            xmlRepo.Save(catalog);
+            Catalog loadedXmlCatalog = xmlRepo.Load();
+            PrintCatalog(loadedXmlCatalog, "XML");
 
-            xmlRepo.Save(catalog, xmlPath);
-
-            Catalog loadedXmlCatalog = xmlRepo.Load(xmlPath);
-            WriteLine("\nLoaded from XML:");
-            PrintCatalog(loadedXmlCatalog);
-
-            // Save and Load using JSON
-            IRepository jsonRepo = new JSONRepository();
-            string jsonFolderPath = "JsonCatalog";
-            Directory.CreateDirectory(jsonFolderPath);
-            jsonRepo.Save(catalog, jsonFolderPath);
-            Catalog loadedJsonCatalog = jsonRepo.Load(jsonFolderPath);
-            WriteLine("\nLoaded from JSON:");
-            PrintCatalog(loadedJsonCatalog);
+            // Save and load from JSON
+            IRepository jsonRepo = new JSONRepository("JsonCatalog");
+            jsonRepo.Save(catalog);
+            Catalog loadedJsonCatalog = jsonRepo.Load();
+            PrintCatalog(loadedJsonCatalog, "JSON");
         }
-
-        private static void PrintCatalog(Catalog catalog)
+        private static void PrintCatalog(Catalog catalog, string source)
         {
+            WriteLine($"Loaded from {source}:");
             foreach (var book in catalog.GetAllBooks())
             {
                 WriteLine($"{book.Key}: {book.Value}");
             }
+            WriteLine();
         }
     }
 }

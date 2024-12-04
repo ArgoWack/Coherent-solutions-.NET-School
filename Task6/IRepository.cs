@@ -2,7 +2,7 @@
 {
     public interface IRepository
     {
-        void Save(Catalog catalog, string filePath);
-        Catalog Load(string filePath);
+        void Save(Catalog catalog);
+        Catalog Load();
     }
 }
