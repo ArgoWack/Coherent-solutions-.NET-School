@@ -1,4 +1,5 @@
 ﻿using System.Xml.Serialization;
+
 namespace Task6
 {
     public class XMLRepository : IRepository
@@ -13,22 +14,23 @@ namespace Task6
         }
         public void Save(Catalog catalog)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Book>));
+            XmlSerializer serializer = new XmlSerializer(typeof(List<DALBook>));
+            var dalBooks = catalog.GetAllBooks().Values.Select(book => book.ToDAL()).ToList();
             using (StreamWriter writer = new StreamWriter(filePath))
             {
-                serializer.Serialize(writer, catalog.GetAllBooks().Values.ToList());
+                serializer.Serialize(writer, dalBooks);
             }
         }
         public Catalog Load()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Book>));
+            XmlSerializer serializer = new XmlSerializer(typeof(List<DALBook>));
             using (StreamReader reader = new StreamReader(filePath))
             {
-                var books = (List<Book>)serializer.Deserialize(reader);
+                var dalBooks = (List<DALBook>)serializer.Deserialize(reader);
                 Catalog catalog = new Catalog();
-
-                foreach (var book in books)
+                foreach (var dalBook in dalBooks)
                 {
+                    var book = Book.FromDAL(dalBook);
                     catalog.AddBook(book.ISBN, book);
                 }
                 return catalog;
