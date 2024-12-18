@@ -7,15 +7,14 @@ namespace Task7
         private readonly string filePath;
         public XMLRepository(string filePath)
         {
-            if (string.IsNullOrWhiteSpace(filePath))
-                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
+            ArgumentException.ThrowIfNullOrEmpty(filePath);
 
             this.filePath = filePath;
         }
         public void Save(Catalog catalog)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(List<DALBook>));
-            var dalBooks = catalog.GetAllBooks().Values.Select(book => book.ToDAL()).ToList();
+            var dalBooks = catalog.GetAllBooks().Values.Select(DALBook.FromBook).ToList();
             using (StreamWriter writer = new StreamWriter(filePath))
             {
                 serializer.Serialize(writer, dalBooks);
@@ -30,7 +29,7 @@ namespace Task7
                 Catalog catalog = new Catalog();
                 foreach (var dalBook in dalBooks)
                 {
-                    var book = Book.FromDAL(dalBook);
+                    var book = dalBook.ToBook();
                     catalog.AddBook(book.ISBN, book);
                 }
                 return catalog;
