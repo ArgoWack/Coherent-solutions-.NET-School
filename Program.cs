@@ -5,7 +5,7 @@ namespace Coherent_solutions_.NET_School
 {
     class Program
     {
-        public static void Main()
+        public static void Test() //Main
         {
             WriteLine("Test");
         }
