@@ -40,7 +40,7 @@ namespace Task6
 {
     class Program
     {
-        static void Task6(string[] args)
+        static void Main(string[] args)
         {
             // Create catalog and populate it with books
             Catalog catalog = new Catalog();

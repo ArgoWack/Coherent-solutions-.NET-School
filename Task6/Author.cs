@@ -6,7 +6,6 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public Author() { }
         public Author(string firstName, string lastName, DateTime dateOfBirth)
         {
             if (string.IsNullOrWhiteSpace(firstName) || firstName.Length > MAX_LENGTH)

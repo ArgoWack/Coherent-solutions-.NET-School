@@ -7,8 +7,8 @@ namespace Task6
         private readonly string folderPath;
         public JSONRepository(string folderPath)
         {
-            if (string.IsNullOrWhiteSpace(folderPath))
-                throw new ArgumentException("Folder path cannot be null or empty.", nameof(folderPath));
+            ArgumentException.ThrowIfNullOrEmpty(folderPath);
+
             this.folderPath = folderPath;
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
@@ -18,11 +18,12 @@ namespace Task6
             foreach (var authorGroup in catalog.GetBooksGroupedByAuthor())
             {
                 string filePath = Path.Combine(folderPath, $"{authorGroup.Author.FirstName}_{authorGroup.Author.LastName}.json");
-                var dalBooks = authorGroup.Books.Select(book => book.ToDAL()).ToList();
+                var dalBooks = authorGroup.Books.Select(DALBook.FromBook).ToList();
                 string json = JsonSerializer.Serialize(dalBooks, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(filePath, json);
             }
         }
+
         public Catalog Load()
         {
             Catalog catalog = new Catalog();
@@ -32,7 +33,7 @@ namespace Task6
                 var dalBooks = JsonSerializer.Deserialize<List<DALBook>>(json);
                 foreach (var dalBook in dalBooks)
                 {
-                    var book = Book.FromDAL(dalBook);
+                    var book = dalBook.ToBook();
                     catalog.AddBook(book.ISBN, book);
                 }
             }
