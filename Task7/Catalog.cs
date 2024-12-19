@@ -2,36 +2,18 @@
 {
     public class Catalog
     {
-        private readonly Dictionary<ISBN, Book> books = new Dictionary<ISBN, Book>();
-        public void AddBook(ISBN isbn, Book book)
+        private readonly Dictionary<string, Book> books = new Dictionary<string, Book>();
+        public void AddBook(string key, Book book)
         {
-            books[isbn] = book;
+            ArgumentException.ThrowIfNullOrEmpty(key);
+            if (book == null)
+                throw new ArgumentNullException(nameof(book));
+
+            books[key] = book;
         }
-        public Book GetBook(ISBN isbn)
+        public IEnumerable<Book> GetAllBooks()
         {
-            return books.TryGetValue(isbn, out Book book) ? book : null;
-        }
-        public IEnumerable<string> GetSortedTitles()
-        {
-            return books.Values.Select(book => book.Title).OrderBy(title => title);
-        }
-        public IEnumerable<Book> GetBooksByAuthor(string authorName)
-        {
-            return books.Values
-                .Where(book => book.Authors.Any(author =>
-                    $"{author.FirstName} {author.LastName}".ToUpper() == authorName.ToUpper()))
-                .OrderBy(book => book.PublicationDate);
-        }
-        public IEnumerable<(Author Author, int BookCount)> GetAuthorBookCounts()
-        {
-            return books.Values
-                .SelectMany(book => book.Authors)
-                .GroupBy(author => author)
-                .Select(group => (Author: group.Key, BookCount: group.Count()));
-        }
-        public Dictionary<ISBN, Book> GetAllBooks()
-        {
-            return new Dictionary<ISBN, Book>(books);
+            return books.Values;
         }
     }
 }

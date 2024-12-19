@@ -6,15 +6,14 @@
         public DateTime? PublicationDate { get; private set; }
         public HashSet<Author> Authors { get; private set; }
         public ISBN ISBN { get; private set; }
-
-        public Book(string title, DateTime? publicationDate, IEnumerable<Author> authors, ISBN isbn)
+        public Book(string title, DateTime? publicationDate, IEnumerable<Author> authors, ISBN isbn = null)
         {
             ArgumentException.ThrowIfNullOrEmpty(title);
 
             Title = title;
             PublicationDate = publicationDate;
             Authors = new HashSet<Author>(authors ?? Enumerable.Empty<Author>());
-            ISBN = isbn ?? throw new ArgumentNullException(nameof(isbn));
+            ISBN = isbn;
         }
         public override string ToString()
         {

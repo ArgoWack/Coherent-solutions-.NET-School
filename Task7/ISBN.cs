@@ -37,8 +37,10 @@ namespace Task7
         }
         public void Validate()
         {
-            if (string.IsNullOrWhiteSpace(normalizedIsbn) || !isbnFormat.IsMatch(normalizedIsbn))
-                throw new ArgumentException("Invalid ISBN format.");
+            ArgumentException.ThrowIfNullOrEmpty(normalizedIsbn);
+
+            if (!isbnFormat.IsMatch(normalizedIsbn))
+                throw new ArgumentException($"Invalid ISBN format: {normalizedIsbn}. Ensure it matches XXX-X-XX-XXXXXX-X or a 13-digit number.");
         }
     }
 }

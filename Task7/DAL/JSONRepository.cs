@@ -15,29 +15,31 @@ namespace Task7
         }
         public void Save(Catalog catalog)
         {
-            foreach (var authorGroup in catalog.GetBooksGroupedByAuthor())
+            foreach (var book in catalog.GetAllBooks())
             {
-                string filePath = Path.Combine(folderPath, $"{authorGroup.Author.FirstName}_{authorGroup.Author.LastName}.json");
-                var dalBooks = authorGroup.Books.Select(DALBook.FromBook).ToList();
-                string json = JsonSerializer.Serialize(dalBooks, new JsonSerializerOptions { WriteIndented = true });
+                var dalBook = DALBook.FromBook(book);
+                string sanitizedFileName = GetSafeFileName(dalBook.Title) + ".json";
+                string filePath = Path.Combine(folderPath, sanitizedFileName);
+                string json = JsonSerializer.Serialize(dalBook, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(filePath, json);
             }
         }
-
         public Catalog Load()
         {
-            Catalog catalog = new Catalog();
+            var catalog = new Catalog();
             foreach (string filePath in Directory.GetFiles(folderPath, "*.json"))
             {
                 string json = File.ReadAllText(filePath);
-                var dalBooks = JsonSerializer.Deserialize<List<DALBook>>(json);
-                foreach (var dalBook in dalBooks)
-                {
-                    var book = dalBook.ToBook();
-                    catalog.AddBook(book.ISBN, book);
-                }
+                var dalBook = JsonSerializer.Deserialize<DALBook>(json);
+                var book = dalBook.ToBook();
+                catalog.AddBook(book.ISBN?.ToString() ?? dalBook.Title, book); // Use Title as fallback key
             }
             return catalog;
+        }
+        private string GetSafeFileName(string name)
+        {
+            // Replace invalid characters with an underscore
+            return string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
         }
     }
 }
