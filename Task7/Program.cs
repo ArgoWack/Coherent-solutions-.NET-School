@@ -1,4 +1,7 @@
-﻿using static System.Console;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using System.Globalization;
+using static System.Console;
 
 /*
 Task 6
@@ -48,31 +51,33 @@ class not to check key (isbn) validity, or make outer key validator (prefered))
 
 namespace Task7
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            // Initialize libraries
-            var paperLibraryFactory = new PaperLibraryFactory();
-            var ebookLibraryFactory = new EBookLibraryFactory();
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "books_info.csv");
+            filePath = Path.GetFullPath(filePath);
 
-            var paperLibrary = paperLibraryFactory.CreateLibrary();
-            var ebookLibrary = ebookLibraryFactory.CreateLibrary();
+            ILibraryFactory factory = new CsvLibraryFactory(filePath);
+            Catalog catalog = factory.GetCatalog();
+            var pressReleaseItems = factory.GetPressRelease();
+            var library = new Library(catalog, pressReleaseItems);
 
-            // Save and load PaperBook Library
-            var paperRepo = new XMLRepository("PaperLibrary.xml");
-            paperRepo.Save(paperLibrary.Catalog);
-            var loadedPaperCatalog = paperRepo.Load();
+            // XML Repository
+            var xmlRepo = new XMLRepository("Library.xml");
+            xmlRepo.Save(catalog);
+            var loadedXmlCatalog = xmlRepo.Load();
 
-            // Save and load EBook Library
-            var ebookRepo = new JSONRepository("EBookLibrary");
-            ebookRepo.Save(ebookLibrary.Catalog);
-            var loadedEbookCatalog = ebookRepo.Load();
+            // JSON Repository
+            var jsonRepo = new JSONRepository("LibraryJson");
+            jsonRepo.Save(catalog);
+            var loadedJsonCatalog = jsonRepo.Load();
 
-            // Print libraries
-            PrintLibrary(loadedPaperCatalog, "PaperBook Library");
-            PrintLibrary(loadedEbookCatalog, "EBook Library");
+            // Print loaded data
+            PrintLibrary(loadedXmlCatalog, "Library from XML");
+            PrintLibrary(loadedJsonCatalog, "Library from JSON");
         }
+
         private static void PrintLibrary(Catalog catalog, string libraryName)
         {
             WriteLine($"Loaded {libraryName}:");

@@ -1,7 +1,14 @@
 ﻿namespace Task7
 {
-    public interface ILibraryFactory
+    public abstract class ILibraryFactory
     {
-        Library CreateLibrary();
+        protected string FilePath;
+
+        protected ILibraryFactory(string filePath)
+        {
+            FilePath = filePath;
+        }
+        public abstract Catalog GetCatalog();
+        public abstract List<string> GetPressRelease();
     }
 }

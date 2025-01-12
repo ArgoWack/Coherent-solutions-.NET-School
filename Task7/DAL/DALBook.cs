@@ -23,7 +23,6 @@
                 {
                     FirstName = a.FirstName,
                     LastName = a.LastName,
-                    DateOfBirth = a.DateOfBirth
                 }).ToList(),
                 ISBN = book.ISBN?.ToString() ?? string.Empty,
                 Publishers = (book is PaperBook paperBook) ? paperBook.Publishers : null,
@@ -33,7 +32,7 @@
         }
         public Book ToBook()
         {
-            var authors = Authors.Select(a => new Author(a.FirstName, a.LastName, a.DateOfBirth)).ToList();
+            var authors = Authors.Select(a => new Author(a.FirstName, a.LastName)).ToList();
 
             if (!string.IsNullOrEmpty(InternetResourceId) && Formats != null)
             {

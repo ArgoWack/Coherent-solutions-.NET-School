@@ -1,10 +1,10 @@
 ﻿using System.Xml.Serialization;
-
 namespace Task7
 {
     public class XMLRepository : IRepository
     {
         private readonly string filePath;
+
         public XMLRepository(string filePath)
         {
             ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -12,8 +12,13 @@ namespace Task7
         }
         public void Save(Catalog catalog)
         {
+            var validBooks = catalog.GetAllBooks()
+                .Where(book => Validation.IsValidBook(book))
+                .ToList();
+
             XmlSerializer serializer = new XmlSerializer(typeof(List<DALBook>));
-            var dalBooks = catalog.GetAllBooks().Select(DALBook.FromBook).ToList();
+            var dalBooks = validBooks.Select(DALBook.FromBook).ToList();
+
             using (StreamWriter writer = new StreamWriter(filePath))
             {
                 serializer.Serialize(writer, dalBooks);
@@ -26,16 +31,13 @@ namespace Task7
             {
                 var dalBooks = (List<DALBook>)serializer.Deserialize(reader);
                 Catalog catalog = new Catalog();
+
                 foreach (var dalBook in dalBooks)
                 {
-                    var book = dalBook.ToBook();
 
-                    // Ensure Publishers is populated for PaperBooks
-                    if (book is PaperBook paperBook && (paperBook.Publishers == null || !paperBook.Publishers.Any()))
-                    {
-                        paperBook.Publishers.Add("Unknown Publisher");
-                    }
-                    catalog.AddBook(book.ISBN.ToString(), book);
+                     var book = dalBook.ToBook();
+                     catalog.AddBook(book.ISBN?.ToString() ?? dalBook.Title, book);
+
                 }
                 return catalog;
             }
