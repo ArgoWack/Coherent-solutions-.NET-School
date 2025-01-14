@@ -1,7 +1,4 @@
-﻿using CsvHelper.Configuration;
-using CsvHelper;
-using System.Globalization;
-using static System.Console;
+﻿using static System.Console;
 
 /*
 Task 6
@@ -58,32 +55,58 @@ namespace Task7
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "books_info.csv");
             filePath = Path.GetFullPath(filePath);
 
-            ILibraryFactory factory = new CsvLibraryFactory(filePath);
-            Catalog catalog = factory.GetCatalog();
-            var pressReleaseItems = factory.GetPressRelease();
-            var library = new Library(catalog, pressReleaseItems);
+            // Creates factories for PaperBook and EBook libraries
+            ILibraryFactory paperBookFactory = new PaperBookLibraryFactory(filePath);
+            ILibraryFactory eBookFactory = new EBookLibraryFactory(filePath);
 
-            // XML Repository
-            var xmlRepo = new XMLRepository("Library.xml");
-            xmlRepo.Save(catalog);
-            var loadedXmlCatalog = xmlRepo.Load();
+            // Gets catalogs
+            var paperBookCatalog = paperBookFactory.GetCatalog();
+            var eBookCatalog = eBookFactory.GetCatalog();
 
-            // JSON Repository
-            var jsonRepo = new JSONRepository("LibraryJson");
-            jsonRepo.Save(catalog);
-            var loadedJsonCatalog = jsonRepo.Load();
+            // Saves and load XML:
+            var paperBookXmlRepo = new XMLRepository("PaperBookLibrary.xml");
+            paperBookXmlRepo.Save(paperBookCatalog);
+            var loadedPaperBookXmlCatalog = paperBookXmlRepo.Load();
 
-            // Print loaded data
-            PrintLibrary(loadedXmlCatalog, "Library from XML");
-            PrintLibrary(loadedJsonCatalog, "Library from JSON");
+            var eBookXmlRepo = new XMLRepository("EBookLibrary.xml");
+            eBookXmlRepo.Save(eBookCatalog);
+            var loadedEBookXmlCatalog = eBookXmlRepo.Load();
+
+            // Saves and load JSON:
+            var paperBookJsonRepo = new JSONRepository("PaperBookLibraryJson");
+            paperBookJsonRepo.Save(paperBookCatalog);
+            var loadedPaperBookJsonCatalog = paperBookJsonRepo.Load();
+
+            var eBookJsonRepo = new JSONRepository("EBookLibraryJson");
+            eBookJsonRepo.Save(eBookCatalog);
+            var loadedEBookJsonCatalog = eBookJsonRepo.Load();
+
+            // Prints loaded data
+            WriteLine("PaperBook Catalog from XML:");
+            PrintCatalog(loadedPaperBookXmlCatalog);
+
+            WriteLine("PaperBook Catalog from JSON:");
+            PrintCatalog(loadedPaperBookJsonCatalog);
+
+            WriteLine("EBook Catalog from XML:");
+            PrintCatalog(loadedEBookXmlCatalog);
+
+            WriteLine("EBook Catalog from JSON:");
+            PrintCatalog(loadedEBookJsonCatalog);
         }
-
-        private static void PrintLibrary(Catalog catalog, string libraryName)
+        private static void PrintCatalog(Catalog catalog)
         {
-            WriteLine($"Loaded {libraryName}:");
             foreach (var book in catalog.GetAllBooks())
             {
                 WriteLine(book);
+            }
+            WriteLine();
+        }
+        private static void PrintPressRelease(List<string> pressRelease)
+        {
+            foreach (var item in pressRelease)
+            {
+                WriteLine(item);
             }
             WriteLine();
         }

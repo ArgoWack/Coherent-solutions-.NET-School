@@ -3,7 +3,6 @@
     public abstract class ILibraryFactory
     {
         protected string FilePath;
-
         protected ILibraryFactory(string filePath)
         {
             FilePath = filePath;

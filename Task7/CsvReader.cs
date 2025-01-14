@@ -1,31 +1,36 @@
-﻿using CsvHelper;
+﻿using System.Globalization;
 using CsvHelper.Configuration;
-using System.Globalization;
 using static System.Console;
-
 namespace Task7
 {
-    public class CsvLibraryFactory : ILibraryFactory
+    public class CsvReader
     {
-        public CsvLibraryFactory(string filePath) : base(filePath) { }
-        public override Catalog GetCatalog()
+        private readonly string filePath;
+        public CsvReader(string filePath)
         {
-            var catalog = new Catalog();
-
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
+            this.filePath = filePath;
+        }
+        public IEnumerable<Book> GetBooks()
+        {
+            var books = new List<Book>();
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HeaderValidated = null,
-                MissingFieldFound = null
+                MissingFieldFound = null,
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
             };
-            using (var reader = new StreamReader(FilePath))
-            using (var csv = new CsvReader(reader, config))
+            using (var reader = new StreamReader(filePath))
+            using (var csv = new CsvHelper.CsvReader(reader, config))
             {
-                csv.Read();
+                if (!csv.Read())
+                {
+                    throw new InvalidOperationException("CSV file is empty or invalid.");
+                }
                 csv.ReadHeader();
-
                 while (csv.Read())
                 {
-                    // Extract fields
                     string title = csv.GetField("title");
                     string publicDate = csv.GetField("publicdate");
                     string authorsField = csv.GetField("creator");
@@ -33,7 +38,6 @@ namespace Task7
                     string identifier = csv.GetField("identifier");
                     string format = csv.GetField("format");
                     string publisher = csv.GetField("publisher");
-
                     // Validate required fields
                     if (string.IsNullOrWhiteSpace(title))
                     {
@@ -62,7 +66,6 @@ namespace Task7
                         }
                         publicationDate = parsedDate;
                     }
-                    // Handle PaperBooks
                     if (!string.IsNullOrEmpty(relatedId))
                     {
                         var isbns = ExtractISBNs(relatedId);
@@ -71,37 +74,24 @@ namespace Task7
                             WriteLine($"Skipping PaperBook entry: Invalid ISBNs for title '{title}'.");
                             continue;
                         }
-                        catalog.AddBook(
-                            isbns.First().ToString(),
-                            new PaperBook(
-                                title,
-                                publicationDate,
-                                authors,
-                                string.IsNullOrWhiteSpace(publisher) ? new List<string>() : new List<string> { publisher },
-                                isbns
-                            )
-                        );
+                        books.Add(new PaperBook(
+                            title,
+                            publicationDate,
+                            authors,
+                            string.IsNullOrWhiteSpace(publisher) ? new List<string>() : new List<string> { publisher },
+                            isbns
+                        ));
                     }
-                    // Handle EBooks
-                    else if (!string.IsNullOrEmpty(identifier))
+                    else if (!string.IsNullOrEmpty(identifier) && !string.IsNullOrWhiteSpace(format))
                     {
-                        if (string.IsNullOrWhiteSpace(format))
-                        {
-                            WriteLine($"Skipping EBook entry: Missing formats for title '{title}'.");
-                            continue;
-                        }
                         var formats = format.Split(',').Select(f => f.Trim()).ToList();
-
-                        catalog.AddBook(
+                        books.Add(new EBook(
+                            title,
+                            publicationDate,
+                            authors,
                             identifier,
-                            new EBook(
-                                title,
-                                publicationDate,
-                                authors,
-                                identifier,
-                                formats
-                            )
-                        );
+                            formats
+                        ));
                     }
                     else
                     {
@@ -109,25 +99,14 @@ namespace Task7
                     }
                 }
             }
-            return catalog;
-        }
-        public override List<string> GetPressRelease()
-        {
-            var catalog = GetCatalog();
-            return catalog.GetAllBooks().OfType<PaperBook>()
-                .SelectMany(b => b.Publishers)
-                .Union(catalog.GetAllBooks().OfType<EBook>().SelectMany(b => b.Formats))
-                .Distinct()
-                .ToList();
+            return books;
         }
         private List<Author> ParseAuthors(string authorsField)
         {
             var authors = new List<Author>();
-
             foreach (var authorData in authorsField.Split(','))
             {
                 var nameParts = authorData.Trim().Split(' ');
-
                 if (nameParts.Length == 1)
                 {
                     authors.Add(new Author(nameParts[0], "Unknown"));
@@ -141,10 +120,15 @@ namespace Task7
             }
             return authors;
         }
+        private DateTime? ParsePublicationDate(string date)
+        {
+            if (DateTime.TryParse(date, out var parsedDate))
+                return parsedDate;
+            return null;
+        }
         private List<ISBN> ExtractISBNs(string relatedId)
         {
             var isbns = new List<ISBN>();
-
             foreach (var id in relatedId.Split(','))
             {
                 if (id.StartsWith("urn:isbn:"))
