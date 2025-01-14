@@ -50,7 +50,7 @@ namespace Task7
 {
     public class Program
     {
-        static void Main(string[] args)
+        static void Task7(string[] args)
         {
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "books_info.csv");
             filePath = Path.GetFullPath(filePath);
